@@ -45,10 +45,15 @@ app.get('/', (req, res) => {
     });
 });
 
-// 4. Placeholder for API Routes
-// We will add your authentication and usage routes here later:
-// app.use('/api/auth', require('./routes/authRoutes'));
-// app.use('/api/usage', require('./routes/usageRoutes'));
+// 4. Register API Routes
+const authRoutes = require('./routes/authRoutes');
+
+// Attach the authentication routes to the server
+app.use('/api/auth', authRoutes);
+
+// Placeholder for future Usage Routes:
+// const usageRoutes = require('./routes/usageRoutes');
+// app.use('/api/usage', usageRoutes);
 
 // 5. Start the Server
 app.listen(PORT, () => {
