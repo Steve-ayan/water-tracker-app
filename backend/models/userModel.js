@@ -1,6 +1,6 @@
 // FILE: backend/models/userModel.js
 
-const { pool } = require('../server'); // Import the database connection pool
+const { pool } = require('../config/db'); 
 const bcrypt = require('bcryptjs');
 
 // Function to find a user by their email (used for login and registration check)
@@ -12,14 +12,14 @@ const findUserByEmail = async (email) => {
 
 // Function to create a new user (Registration)
 const createUser = async (email, password, first_name) => {
-    // Hash the password securely before storing it (Standard Security Practice)
+  
     const salt = await bcrypt.genSalt(10);
     const password_hash = await bcrypt.hash(password, salt);
 
     const query = `
         INSERT INTO users (email, password_hash, first_name)
         VALUES ($1, $2, $3)
-        RETURNING user_id, email, first_name, date_joined; // Return safe data
+        RETURNING user_id, email, first_name, date_joined;
     `;
     const { rows } = await pool.query(query, [email, password_hash, first_name]);
     return rows[0];
