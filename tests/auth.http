@@ -1,0 +1,60 @@
+# FILE: tests/auth.http
+
+### Test 1: Register New User Successfully
+
+# URL for the registration endpoint
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+    "email": "testuser@example.com",
+    "password": "StrongPassword123",
+    "first_name": "Stephen"
+}
+
+### Test 2: Attempt to Register the Same User (Should Fail with 409 Conflict)
+
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+    "email": "testuser@example.com",
+    "password": "AnotherPassword",
+    "first_name": "Stephen"
+}
+
+### Test 3: User Login (Should Succeed and Return JWT Token)
+
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+    "email": "testuser@example.com",
+    "password": "StrongPassword123"
+}
+
+### Test 4: Failed Login Attempt (Wrong Password)
+
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+    "email": "testuser@example.com",
+    "password": "WrongPassword123"
+}
+
+### Test 5: Log Water Usage (Protected Route)
+
+POST http://localhost:5000/api/usage/log
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzYxNjM3OTkyLCJleHAiOjE3NjE3MjQzOTJ9.gK5-gw7PDnQzwwWiS5V1EiFEI1gIsGZ14AwOkmyKp80
+
+{
+    "totalUsageL": 350.50
+}
+
+### Test 6: Get Water Usage History (Protected Route)
+
+GET http://localhost:5000/api/usage/history
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzYxNjM3OTkyLCJleHAiOjE3NjE3MjQzOTJ9.gK5-gw7PDnQzwwWiS5V1EiFEI1gIsGZ14AwOkmyKp80
