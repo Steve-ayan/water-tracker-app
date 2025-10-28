@@ -13,7 +13,7 @@ function App() {
   return (
     <div className="app-container">
       <header>
-        <h1>💧 Cardiff MSc Water Tracker</h1>
+        <h1>💧Water Tracker</h1>
         {user && <button onClick={logout}>Logout</button>}
       </header>
       
