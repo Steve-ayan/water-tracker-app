@@ -10,7 +10,7 @@ const cors = require('cors'); // CORS middleware import
 const app = express(); // Initialize Express application
 
 // CRITICAL: Render often uses port 10000+, but process.env.PORT handles it
-const PORT = process.env.PORT || 10000; 
+const PORT = process.env.PORT || 3000; 
 
 // --- Database Connection ---
 connectDB(); // Call the connection test function
