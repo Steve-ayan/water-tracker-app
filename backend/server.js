@@ -5,13 +5,14 @@ require('dotenv').config({ path: '../.env' });
 
 const express = require('express');
 const { connectDB } = require('./config/db');
-const cors = require('cors'); // <-- ADDED: CORS middleware import
+const cors = require('cors'); // CORS middleware import
 
 const app = express(); // Initialize Express application
 
-const PORT = process.env.PORT || 10000; // Use a higher port for Render/Cloud
+// CRITICAL: Render often uses port 10000+, but process.env.PORT handles it
+const PORT = process.env.PORT || 10000; 
 
-// --- Database Connection (Establish the connection and wait) ---
+// --- Database Connection ---
 connectDB(); // Call the connection test function
 
 // -----------------------------------------------------------
@@ -20,7 +21,7 @@ connectDB(); // Call the connection test function
 
 // Define allowed origins for CORS
 const allowedOrigins = [
-    'https://water-tracker-nhhknl5nt-stephen-ayankosos-projects.vercel.app', // <-- YOUR LIVE VERCEL URL
+    'https://water-tracker-nhhknl5nt-stephen-ayankosos-projects.vercel.app', // Your VERCEL URL
     'http://localhost:5173' // Allows local testing
 ];
 
@@ -33,6 +34,8 @@ const corsOptions = {
             callback(new Error('Not allowed by CORS'));
         }
     },
+    // FINAL FIX: Explicitly list all allowed methods, including OPTIONS (preflight check)
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], 
     credentials: true,
 };
 
