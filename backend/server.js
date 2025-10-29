@@ -1,21 +1,45 @@
-// FILE: backend/server.js (FINAL CLEAN VERSION)
+// FILE: backend/server.js (FINAL DEPLOYMENT VERSION)
 
 // 1. Load Environment Variables
 require('dotenv').config({ path: '../.env' }); 
 
 const express = require('express');
 const { connectDB } = require('./config/db');
-const app = express();
+const cors = require('cors'); // <-- ADDED: CORS middleware import
 
-const PORT = process.env.PORT || 5000; 
+const app = express(); // Initialize Express application
+
+const PORT = process.env.PORT || 10000; // Use a higher port for Render/Cloud
 
 // --- Database Connection (Establish the connection and wait) ---
 connectDB(); // Call the connection test function
 
 // -----------------------------------------------------------
 
-// 2. Middleware Setup 
-app.use(express.json()); 
+// --- 2. Middleware Setup (Including CORS) ---
+
+// Define allowed origins for CORS
+const allowedOrigins = [
+    'https://water-tracker-nhhknl5nt-stephen-ayankosos-projects.vercel.app', // <-- YOUR LIVE VERCEL URL
+    'http://localhost:5173' // Allows local testing
+];
+
+const corsOptions = {
+    origin: (origin, callback) => {
+        // Allow if origin is in the list, or if the origin is undefined (e.g., direct API calls/same origin)
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true,
+};
+
+app.use(cors(corsOptions)); // 1. Enable CORS middleware FIRST
+app.use(express.json());   // 2. Enable JSON parsing middleware SECOND
+
+// -----------------------------------------------------------
 
 // 3. Root Route (Health Check)
 app.get('/', (req, res) => {
@@ -26,13 +50,11 @@ app.get('/', (req, res) => {
 });
 
 // 4. Register API Routes
-// Import the routes
 const authRoutes = require('./routes/authRoutes'); 
-const usageRoutes = require('./routes/usageRoutes'); // NEW ROUTE IMPORT!
+const usageRoutes = require('./routes/usageRoutes'); 
 
-// Attach the routes to the server
 app.use('/api/auth', authRoutes);
-app.use('/api/usage', usageRoutes); // NEW ROUTE ACTIVATION!
+app.use('/api/usage', usageRoutes);
 
 // 5. Start the Server
 app.listen(PORT, () => {
