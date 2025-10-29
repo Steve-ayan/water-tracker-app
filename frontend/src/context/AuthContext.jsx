@@ -1,9 +1,12 @@
-// FILE: frontend/src/context/AuthContext.jsx
+// FILE: frontend/src/context/AuthContext.jsx (FINAL VERSION)
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
 const AuthContext = createContext();
+
+// CRITICAL FIX: Define the absolute URL for the live Render API
+const BASE_API_URL = 'https://water-tracker-api-live.onrender.com'; 
 
 // Custom hook to use authentication
 export const useAuth = () => useContext(AuthContext);
@@ -43,8 +46,8 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      // NOTE: Because of the proxy in vite.config.js, this URL hits the backend!
-      const res = await axios.post('/api/auth/login', { email, password });
+      // FIX: Use the absolute URL for production requests
+      const res = await axios.post(`${BASE_API_URL}/api/auth/login`, { email, password });
       
       const { user_id, first_name, email: userEmail, token: jwtToken } = res.data;
       
@@ -69,13 +72,14 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
     setError(null);
     try {
-        await axios.post('/api/auth/register', userData);
-        // After successful registration, log the user in immediately
-        await login(userData.email, userData.password);
+      // FIX: Use the absolute URL for production requests
+      await axios.post(`${BASE_API_URL}/api/auth/register`, userData);
+      // After successful registration, log the user in immediately
+      await login(userData.email, userData.password);
     } catch (err) {
-        const errorMessage = err.response?.data?.message || 'Registration failed.';
-        setError(errorMessage);
-        throw new Error(errorMessage);
+      const errorMessage = err.response?.data?.message || 'Registration failed.';
+      setError(errorMessage);
+      throw new Error(errorMessage);
     }
   };
 
