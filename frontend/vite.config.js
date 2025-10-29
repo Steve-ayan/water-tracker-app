@@ -8,9 +8,9 @@ export default defineConfig({
     proxy: {
       // Proxy API requests from React to the Node.js backend server
       '/api': {
-        target: 'http://localhost:5000', // Matches your backend server port
+        target: 'https://water-tracker-api-live.onrender.com', // Matches your backend server port
         changeOrigin: true,
-        secure: false,
+        secure: true,
       },
     },
   },
