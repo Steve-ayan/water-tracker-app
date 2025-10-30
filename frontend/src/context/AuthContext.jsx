@@ -6,7 +6,7 @@ import axios from 'axios';
 const AuthContext = createContext();
 
 // CRITICAL FIX: Define the absolute URL for the live Render API
-const BASE_API_URL = 'https://water-tracker-api-live.onrender.com'; 
+const BASE_API_URL = ''; 
 
 // Custom hook to use authentication
 export const useAuth = () => useContext(AuthContext);
