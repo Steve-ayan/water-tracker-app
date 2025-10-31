@@ -1,15 +1,15 @@
-// FILE: backend/config/db.js (FINAL GUARANTEED DEPLOYMENT VERSION)
+// FILE: backend/config/db.js (FINAL, WORKING INTERNAL CONNECTION)
 
 const { Pool } = require('pg');
 
-// FINAL FIX: Hardcoded Internal Database URL
-// This bypasses the ENOTFOUND hostname error by using the direct connection string
-const RENDER_DB_URL = 'postgresql://water_tracker_db_final_user:tN07NnMcZ1RYmaQkskthViDXMj2l15ec@dpg-d41ik13e5dus73dc4reg-a/water_tracker_db_final';
-
 // --- Database Connection (Establish the connection pool) ---
 const pool = new Pool({
-    // Use the hardcoded URL directly
-    connectionString: RENDER_DB_URL, 
+    // CRITICAL FIX: Use individual variables, relying on the PGHOST being the simple service name
+    user: process.env.PGUSER,
+    host: process.env.PGHOST,
+    database: process.env.PGDATABASE,
+    password: process.env.PGPASSWORD,
+    port: process.env.PGPORT,
     ssl: {
         // ESSENTIAL: Bypasses strict SSL certificate checks for internal Render connection
         rejectUnauthorized: false 
@@ -22,9 +22,9 @@ const connectDB = async () => {
         await pool.connect();
         console.log('✅ Connected to the PostgreSQL database!');
     } catch (err) {
-        // This log now provides the final check, as all variables are bypassed
+        // This log directs the user to check individual PGHOST, PGUSER, etc.
         console.error('❌ Database connection error:', err.stack);
-        console.log('Final check: Ensure the tables are created in the database.');
+        console.log('Final check: Ensure PGHOST is the simple service name (e.g., water-tracker-db-final) and tables are created.');
         process.exit(1); 
     }
 };
