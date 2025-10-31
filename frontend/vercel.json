@@ -1,8 +1,0 @@
-{
-  "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "https://water-tracker-api-live.onrender.com/api/$1"
-    }
-  ]
-}

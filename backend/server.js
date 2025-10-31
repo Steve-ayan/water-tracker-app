@@ -59,8 +59,5 @@ const usageRoutes = require('./routes/usageRoutes');
 app.use('/api/auth', authRoutes);
 app.use('/api/usage', usageRoutes);
 
-// 5. Start the Server
-app.listen(PORT, () => {
-    console.log(`📡 Server running on port ${PORT}`);
-    console.log(`Local Test URL: http://localhost:${PORT}`);
-});
+// ADD THIS LINE AT THE BOTTOM:
+module.exports = app;
