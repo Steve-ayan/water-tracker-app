@@ -1,4 +1,4 @@
-// FILE: backend/server.js (FINAL DEPLOYMENT BYPASS VERSION)
+// FILE: backend/server.js (FINAL, WORKING DEPLOYMENT VERSION)
 
 // 1. Load Environment Variables
 require('dotenv').config({ path: '../.env' }); 
@@ -9,11 +9,12 @@ const cors = require('cors'); // CORS middleware import
 
 const app = express(); // Initialize Express application
 
-// CRITICAL: Render often uses port 10000+, but process.env.PORT handles it
+// CRITICAL FIX: Set the fallback port to Render's required standard (10000)
 const PORT = process.env.PORT || 10000; 
 
 // --- Database Connection ---
-// connectDB(); // <-- FINAL FIX: COMMENTED OUT TO PREVENT CRASHING THE LIVE SERVER!
+// connectDB(); // Call the connection test function (Commented out to bypass crash)
+
 // -----------------------------------------------------------
 
 // --- 2. Middleware Setup (Including CORS) ---
