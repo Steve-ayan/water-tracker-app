@@ -1,4 +1,4 @@
-// FILE: backend/server.js (FINAL DEPLOYMENT VERSION)
+// FILE: backend/server.js (FINAL, WORKING DEPLOYMENT VERSION)
 
 // 1. Load Environment Variables
 require('dotenv').config({ path: '../.env' }); 
@@ -9,8 +9,8 @@ const cors = require('cors'); // CORS middleware import
 
 const app = express(); // Initialize Express application
 
-// CRITICAL: Render often uses port 10000+, but process.env.PORT handles it
-const PORT = process.env.PORT || 3000; 
+// CRITICAL FIX: Set the fallback port to Render's required standard (10000)
+const PORT = process.env.PORT || 10000; 
 
 // --- Database Connection ---
 connectDB(); // Call the connection test function
@@ -27,7 +27,6 @@ const allowedOrigins = [
 
 const corsOptions = {
     origin: (origin, callback) => {
-        // Allow if origin is in the list, or if the origin is undefined (e.g., direct API calls/same origin)
         if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
@@ -59,5 +58,13 @@ const usageRoutes = require('./routes/usageRoutes');
 app.use('/api/auth', authRoutes);
 app.use('/api/usage', usageRoutes);
 
-// ADD THIS LINE AT THE BOTTOM:
+// -----------------------------------------------------------
+
+// 5. Start the Server (Must be present to bind the port)
+app.listen(PORT, () => {
+    console.log(`📡 Server running on port ${PORT}`);
+    console.log(`Local Test URL: http://localhost:${PORT}`);
+});
+
+// CRITICAL EXPORT: Export the app object for serverless environments (Vercel/Render)
 module.exports = app;
