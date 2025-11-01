@@ -5,8 +5,8 @@ import axios from 'axios';
 
 const AuthContext = createContext();
 
-// CRITICAL FIX: Define the absolute URL for the live Render API
-const BASE_API_URL = ''; 
+// CRITICAL: Base URL for the live Render API. Vercel will use this directly.
+const BASE_API_URL = 'https://water-tracker-api-final.onrender.com'; 
 
 // Custom hook to use authentication
 export const useAuth = () => useContext(AuthContext);
@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Set up Axios interceptor to include the token in all requests
+  // Set up Axios interceptor to include the token in all protected requests
   useEffect(() => {
     if (token) {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -46,7 +46,7 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      // FIX: Use the absolute URL for production requests
+      // FIX: Use the absolute URL for all production requests
       const res = await axios.post(`${BASE_API_URL}/api/auth/login`, { email, password });
       
       const { user_id, first_name, email: userEmail, token: jwtToken } = res.data;
