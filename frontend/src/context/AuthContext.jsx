@@ -1,14 +1,12 @@
-// FILE: frontend/src/context/AuthContext.jsx (FINAL, WORKING VERSION)
+// FILE: frontend/src/context/AuthContext.jsx (FINAL FIXED FOR RENDER BACKEND)
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
 const AuthContext = createContext();
 
-// CRITICAL FIX: Base URL is now read from Vercel Environment Variables
-// If Vercel is not running (local), it defaults to localhost:5000.
-// We are setting the Vercel variable as VITE_BASE_API_URL
-const BASE_API_URL = import.meta.env.VITE_BASE_API_URL || 'http://localhost:5000';
+// ✅ DIRECT: your backend URL on Render
+const BASE_API_URL = "https://water-tracker-app-eer3.onrender.com";
 
 // Custom hook to use authentication
 export const useAuth = () => useContext(AuthContext);
@@ -48,7 +46,7 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      // FIX: Use the variable for the API call
+      // ✅ USE RENDER BACKEND URL DIRECTLY
       const res = await axios.post(`${BASE_API_URL}/api/auth/login`, { email, password });
       
       const { user_id, first_name, email: userEmail, token: jwtToken } = res.data;
@@ -74,9 +72,8 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
     setError(null);
     try {
-      // FIX: Use the variable for the API call
+      // ✅ USE RENDER BACKEND URL DIRECTLY
       await axios.post(`${BASE_API_URL}/api/auth/register`, userData);
-      // After successful registration, log the user in immediately
       await login(userData.email, userData.password);
     } catch (err) {
       const errorMessage = err.response?.data?.message || 'Registration failed.';
