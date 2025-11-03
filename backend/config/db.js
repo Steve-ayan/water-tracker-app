@@ -1,22 +1,24 @@
-// FILE: backend/config/db.js
+// backend/config/db.js
+const { Client } = require('pg');
 
-const { Pool } = require('pg');
-
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
-});
-
-// optional connection test
 const connectDB = async () => {
   try {
-    await pool.connect();
-    console.log('✅ Connected to PostgreSQL (Render)');
-  } catch (err) {
-    console.error('❌ Database connection error:', err.stack);
+    const client = new Client({
+      connectionString: process.env.DATABASE_URL,
+      ssl: {
+        rejectUnauthorized: false
+      }
+    });
+
+    await client.connect();
+
+    console.log("✅ Connected to the PostgreSQL database!");
+
+    global.pgClient = client; // make available everywhere
+  } catch (error) {
+    console.error("❌ Database connection failed:", error);
+    process.exit(1);
   }
 };
 
-module.exports = { pool, connectDB };
+module.exports = { connectDB };

@@ -15,27 +15,17 @@ const PORT = process.env.PORT;
 connectDB();
 
 // ALLOWED ORIGINS
-const allowedOrigins = [
-  'https://water-tracker-app-live.vercel.app',   // your frontend vercel URL
-  'https://water-tracker-app-eer3.onrender.com', // your backend render URL (needed for internal calls)
-  'http://localhost:5173'                         // local dev
-];
-
-// CORS CONFIG
-const corsOptions = {
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+// CORS - SIMPLE VERSION (REQUIRED FOR RENDER + VERCEL)
+app.use(cors({
+  origin: [
+    "https://water-tracker-app-live.vercel.app",
+    "https://water-tracker-app-eer3.onrender.com",
+    "http://localhost:5173"
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true,
-};
+}));
 
-// MIDDLEWARE
-app.use(cors(corsOptions));
 app.use(express.json());
 
 // TEST ROUTE
