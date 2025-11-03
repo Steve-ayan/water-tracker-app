@@ -21,8 +21,8 @@ const PORT = process.env.PORT || 3000;
 
 // Define allowed origins for CORS
 const allowedOrigins = [
-    'https://water-tracker-nhhknl5nt-stephen-ayankosos-projects.vercel.app', // Your VERCEL URL
-    'http://localhost:5173' // Allows local testing
+    'https://water-tracker-app-live.vercel.app', // REAL LIVE FRONTEND
+    'http://localhost:5173' // for local test
 ];
 
 const corsOptions = {
