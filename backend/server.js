@@ -1,71 +1,62 @@
-// FILE: backend/server.js (FINAL, WORKING DEPLOYMENT VERSION)
+// FILE: backend/server.js
 
-// 1. Load Environment Variables
-require('dotenv').config({ path: '../.env' }); 
+require('dotenv').config();
 
 const express = require('express');
 const { connectDB } = require('./config/db');
-const cors = require('cors'); // CORS middleware import
+const cors = require('cors');
 
-const app = express(); // Initialize Express application
+const app = express();
 
-// CRITICAL FIX: Set the fallback port to Render's required standard (10000)
-const PORT = process.env.PORT || 3000; 
+// Render will assign PORT automatically → fallback to 3000 locally
+const PORT = process.env.PORT;
 
-// --- Database Connection ---
-// connectDB(); // Call the connection test function (Commented out to bypass crash)
+// CONNECT DATABASE (this MUST run)
+connectDB();
 
-// -----------------------------------------------------------
-
-// --- 2. Middleware Setup (Including CORS) ---
-
-// Define allowed origins for CORS
+// ALLOWED ORIGINS
 const allowedOrigins = [
-    'https://water-tracker-app-live.vercel.app', // REAL LIVE FRONTEND
-    'http://localhost:5173' // for local test
+  'https://water-tracker-app-live.vercel.app',   // your frontend vercel URL
+  'https://water-tracker-app-eer3.onrender.com', // your backend render URL (needed for internal calls)
+  'http://localhost:5173'                         // local dev
 ];
 
+// CORS CONFIG
 const corsOptions = {
-    origin: (origin, callback) => {
-        // Allow if origin is in the list, or if the origin is undefined 
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-    // FINAL FIX: Explicitly list all allowed methods, including OPTIONS (preflight check)
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], 
-    credentials: true,
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: true,
 };
 
-app.use(cors(corsOptions)); // 1. Enable CORS middleware FIRST
-app.use(express.json());   // 2. Enable JSON parsing middleware SECOND
+// MIDDLEWARE
+app.use(cors(corsOptions));
+app.use(express.json());
 
-// -----------------------------------------------------------
-
-// 3. Root Route (Health Check)
+// TEST ROUTE
 app.get('/', (req, res) => {
-    res.status(200).json({ 
-        message: 'Water Tracker API is running!',
-        environment: process.env.NODE_ENV || 'development'
-    });
+  res.status(200).json({
+    message: 'Water Tracker API is running!',
+    environment: process.env.NODE_ENV || 'development'
+  });
 });
 
-// 4. Register API Routes
-const authRoutes = require('./routes/authRoutes'); 
-const usageRoutes = require('./routes/usageRoutes'); 
+// ROUTES
+const authRoutes = require('./routes/authRoutes');
+const usageRoutes = require('./routes/usageRoutes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/usage', usageRoutes);
 
-// -----------------------------------------------------------
-
-// 5. Start the Server (Must be present to bind the port)
+// START SERVER
 app.listen(PORT, () => {
-    console.log(`📡 Server running on port ${PORT}`);
-    console.log(`Local Test URL: http://localhost:${PORT}`);
+  console.log(`📡 Server running on port ${PORT}`);
+  console.log(`Local Test URL: http://localhost:${PORT}`);
 });
 
-// CRITICAL EXPORT: Export the app object for serverless environments (Vercel/Render)
 module.exports = app;
