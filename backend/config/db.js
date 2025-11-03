@@ -1,24 +1,34 @@
 // backend/config/db.js
-const { Client } = require('pg');
+const { Pool } = require('pg');
 
+// Create a pool variable
+let pool;
+
+/**
+ * Connect to PostgreSQL database using Render's DATABASE_URL.
+ * Uses SSL with rejectUnauthorized false for cloud compatibility.
+ */
 const connectDB = async () => {
   try {
-    const client = new Client({
+    pool = new Pool({
       connectionString: process.env.DATABASE_URL,
       ssl: {
-        rejectUnauthorized: false
-      }
+        rejectUnauthorized: false, // required for Render-hosted Postgres
+      },
     });
 
-    await client.connect();
+    // Test connection
+    await pool.connect();
+    console.log("✅ Connected to PostgreSQL database!");
 
-    console.log("✅ Connected to the PostgreSQL database!");
-
-    global.pgClient = client; // make available everywhere
+    // Make the pool globally accessible
+    global.pgPool = pool;
   } catch (error) {
     console.error("❌ Database connection failed:", error);
-    process.exit(1);
+    process.exit(1); // stop server if DB fails
   }
 };
 
-module.exports = { connectDB };
+// Export the connect function and the pool
+module.exports = { connectDB, pool };
+
